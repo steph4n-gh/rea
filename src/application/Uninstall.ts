@@ -413,7 +413,11 @@ const removeManagedSkills = async (
     ).map(({ client, path }) =>
       removeManagedPath(
         path,
-        client === "claude_code" ? "Claude Code skill" : "skill",
+        client === "claude_code"
+          ? "Claude Code skill"
+          : client === "antigravity"
+            ? "Antigravity skill"
+            : "skill",
         fileSystem,
       ),
     ),

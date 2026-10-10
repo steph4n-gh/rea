@@ -73,6 +73,14 @@ describe("client configuration filesystem lifecycle", () => {
     expect(await detectClients(emptyHome)).toEqual([]);
   });
 
+  it("detects Antigravity from alternative marker directories", async () => {
+    const home = await createTestTempDirectory("rea-detect-antigravity-");
+    roots.push(home);
+    await mkdir(join(home, ".gemini/antigravity-cli"), { recursive: true });
+    const detected = await detectClients(home);
+    expect(detected.map(({ name }) => name)).toContain("antigravity");
+  });
+
   it("preserves unrelated Codex TOML and supports an installed command", async () => {
     const home = await createTestTempDirectory("rea-toml-");
     roots.push(home);
@@ -1648,6 +1656,7 @@ describe("client configuration filesystem failure reporting", () => {
     const rootsToRemove = [
       join(home, ".agents/skills/reverse-engineer-anything"),
       join(customClaudeDirectory, "skills/reverse-engineer-anything"),
+      join(home, ".gemini/config/skills/reverse-engineer-anything"),
     ];
     await Promise.all(
       rootsToRemove.map((path) => mkdir(path, { recursive: true })),

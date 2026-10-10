@@ -21,7 +21,7 @@ interface CanonicalSkillFile {
 
 /** Managed skill location selected for a client family. */
 export interface SkillDestination {
-  readonly client: "shared" | "claude_code";
+  readonly client: "shared" | "claude_code" | "antigravity";
   readonly path: string;
 }
 
@@ -39,18 +39,27 @@ export const claudeCodeSkillsDirectory = (
 ): string =>
   join(environment.CLAUDE_CONFIG_DIR ?? join(home, ".claude"), "skills");
 
+/** Resolve Antigravity personal skills from the selected environment. */
+export const antigravitySkillsDirectory = (home: string): string =>
+  join(home, ".gemini", "config", "skills");
+
 /** Resolve the skill roots required by a client selection, or all owned roots. */
 export const skillDestinations = (
   home: string,
   clientIds: readonly string[] | undefined,
   claudeSkillsDirectory = claudeCodeSkillsDirectory(home),
+  antigravityDirectory = antigravitySkillsDirectory(home),
 ): readonly SkillDestination[] => {
   const includeClaude =
     clientIds === undefined || clientIds.includes("claude_code");
+  const includeAntigravity =
+    clientIds === undefined || clientIds.includes("antigravity");
   const includeShared =
     clientIds === undefined ||
     clientIds.length === 0 ||
-    clientIds.some((clientId) => clientId !== "claude_code");
+    clientIds.some(
+      (clientId) => clientId !== "claude_code" && clientId !== "antigravity",
+    );
   return [
     ...(includeShared
       ? [
@@ -65,6 +74,14 @@ export const skillDestinations = (
           {
             client: "claude_code" as const,
             path: join(claudeSkillsDirectory, PRODUCT_IDENTITY.skillName),
+          },
+        ]
+      : []),
+    ...(includeAntigravity
+      ? [
+          {
+            client: "antigravity" as const,
+            path: join(antigravityDirectory, PRODUCT_IDENTITY.skillName),
           },
         ]
       : []),

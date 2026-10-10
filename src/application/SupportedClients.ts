@@ -187,6 +187,28 @@ const devinDirectory = ({ home, platform, env }: ClientPathContext): string =>
     ? join(env.APPDATA ?? join(home, "AppData", "Roaming"), "devin")
     : join(home, ".config", "devin");
 
+const antigravityMarkerDirectory = ({ home }: ClientPathContext): string => {
+  const candidates = [
+    join(home, ".gemini", "config"),
+    join(home, ".gemini", "antigravity-cli"),
+    join(home, ".gemini", "antigravity"),
+  ];
+  return (
+    candidates.find((path) => {
+      try {
+        lstatSync(path);
+        return true;
+      } catch (cause: unknown) {
+        return !(
+          cause instanceof Error &&
+          "code" in cause &&
+          cause.code === "ENOENT"
+        );
+      }
+    }) ?? join(home, ".gemini", "config")
+  );
+};
+
 /** Stable product metadata used to derive setup discovery and documentation. */
 export const SUPPORTED_CLIENT_DEFINITIONS = [
   {
@@ -253,7 +275,7 @@ export const SUPPORTED_CLIENT_DEFINITIONS = [
     name: "antigravity",
     displayName: "Antigravity",
     configPath: [".gemini", "config", "mcp_config.json"],
-    markerPath: [".gemini", "config"],
+    markerPath: antigravityMarkerDirectory,
     format: "json",
   },
   {

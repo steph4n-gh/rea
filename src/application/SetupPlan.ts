@@ -276,17 +276,23 @@ const setupPlan = (input: {
         id:
           client === "claude_code"
             ? "install_skill:claude_code"
-            : "install_skill",
+            : client === "antigravity"
+              ? "install_skill:antigravity"
+              : "install_skill",
         kind: "install_skill",
         label:
           client === "claude_code"
             ? "REA skill for Claude Code"
-            : "REA reverse-engineering skill",
+            : client === "antigravity"
+              ? "REA skill for Antigravity"
+              : "REA reverse-engineering skill",
         target: path,
         detail:
           client === "claude_code"
             ? "Install or update the REA skill in Claude Code's personal skill directory."
-            : "Install or update the bundled REA reverse-engineering skill and on-demand references.",
+            : client === "antigravity"
+              ? "Install or update the REA skill in Antigravity's personal skill directory."
+              : "Install or update the bundled REA reverse-engineering skill and on-demand references.",
         external: false,
         operation: "install",
       }))

@@ -122,22 +122,29 @@ readiness for one task instead of auditing every integration, see
 Setup can configure these clients for REA's local MCP server. Grok Bot is
 listed after the table because its connector is not one of these files:
 
-| Client             | `--client` value |
-| ------------------ | ---------------- |
-| Claude Code        | `claude_code`    |
-| Claude Desktop     | `claude_desktop` |
-| Codex              | `codex`          |
-| Cursor             | `cursor`         |
-| Gemini CLI         | `gemini_cli`     |
-| Windsurf           | `windsurf`       |
-| Devin              | `devin`          |
-| OpenCode           | `opencode`       |
-| Antigravity        | `antigravity`    |
-| GitHub Copilot CLI | `copilot_cli`    |
-| Command Code       | `commandcode`    |
-| VS Code            | `vscode`         |
-| Grok Build         | `grok_build`     |
-| OMP                | `omp`            |
+| Client              | `--client` value |
+| ------------------- | ---------------- |
+| Claude Code         | `claude_code`    |
+| Claude Desktop      | `claude_desktop` |
+| Codex               | `codex`          |
+| Cursor              | `cursor`         |
+| Antigravity         | `antigravity`    |
+| Windsurf            | `windsurf`       |
+| Devin               | `devin`          |
+| OpenCode            | `opencode`       |
+| GitHub Copilot CLI  | `copilot_cli`    |
+| Command Code        | `commandcode`    |
+| VS Code             | `vscode`         |
+| Grok Build          | `grok_build`     |
+| OMP                 | `omp`            |
+| Gemini CLI (legacy) | `gemini_cli`     |
+
+For Antigravity (including Antigravity CLI `agy` and Antigravity IDE), setup
+writes a standard stdio registration to `~/.gemini/config/mcp_config.json`
+under `mcpServers.rea`. It installs the bundled skill to Antigravity's personal
+skill directory at `~/.gemini/config/skills/reverse-engineer-anything`.
+Gemini CLI (`gemini_cli`) remains supported for legacy `~/.gemini/settings.json`
+configurations.
 
 For OMP, setup writes a `type: "stdio"` entry to the user-level
 `~/.omp/agent/mcp.json`. It follows `PI_CONFIG_DIR`, an absolute
@@ -194,8 +201,9 @@ save verified paths for an existing Ghidra installation.
 
 The bundled skill is installed where each selected client discovers personal
 skills: Claude Code uses `~/.claude/skills` (or
-`$CLAUDE_CONFIG_DIR/skills` when configured), while other supported clients
-use the shared `~/.agents/skills` directory. A mixed selection plans both
+`$CLAUDE_CONFIG_DIR/skills` when configured), Antigravity uses
+`~/.gemini/config/skills`, while other supported clients
+use the shared `~/.agents/skills` directory. A mixed selection plans those
 paths. Selecting the skill without a client uses the shared directory. Setup
 leaves existing skill copies in other locations untouched.
 

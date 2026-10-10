@@ -12,6 +12,7 @@ import { describe, expect, it } from "vitest";
 import { createTestTempDirectory } from "../../fixtures/temporaryDirectory.js";
 
 import {
+  antigravitySkillsDirectory,
   canonicalSkillNeedsInstall,
   claudeCodeSkillsDirectory,
   installCanonicalSkill,
@@ -144,6 +145,54 @@ describe("canonical skill transaction", () => {
         (await runDoctor(undefined, host, doctorScope)).identity?.skill.state,
       ).toBe("aligned");
     }
+  });
+});
+
+describe("Antigravity skill transaction", () => {
+  it("installs only the selected Antigravity personal skill", async () => {
+    const home = await createTestTempDirectory("rea-antigravity-skill-");
+    const skillsDirectory = antigravitySkillsDirectory(home);
+    const antigravitySkill = join(
+      skillsDirectory,
+      "reverse-engineer-anything/SKILL.md",
+    );
+    const configDirectory = join(home, ".gemini", "config");
+    await mkdir(configDirectory, { recursive: true });
+    await writeFile(
+      join(configDirectory, "mcp_config.json"),
+      JSON.stringify({
+        mcpServers: {
+          rea: {
+            command: "npx",
+            args: ["-y", PRODUCT_IDENTITY.registrationPackageSpecifier, "mcp"],
+          },
+        },
+      }),
+    );
+    const host = systemDoctorHost({
+      environment: {
+        HOME: home,
+        USERPROFILE: home,
+      },
+    });
+
+    expect(await canonicalSkillNeedsInstall(home, ["antigravity"])).toBe(true);
+    expect(await installCanonicalSkill(home, ["antigravity"])).toBe(
+      "installed",
+    );
+    expect(await canonicalSkillNeedsInstall(home, ["antigravity"])).toBe(false);
+    await expect(access(antigravitySkill)).resolves.toBeUndefined();
+    await expect(
+      access(join(home, ".agents/skills/reverse-engineer-anything")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
+    expect(
+      (
+        await runDoctor(undefined, host, {
+          clients: ["antigravity"],
+          skill: true,
+        })
+      ).identity?.skill.state,
+    ).toBe("aligned");
   });
 });
 

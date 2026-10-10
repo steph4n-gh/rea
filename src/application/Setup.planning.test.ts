@@ -42,6 +42,29 @@ describe("skill plan destinations", () => {
       "/fixture/home/.claude/skills/reverse-engineer-anything",
     ]);
   });
+
+  it("plans an Antigravity-only skill in its personal location", async () => {
+    const host = new FakeSetupHost();
+    host.clients = [
+      {
+        name: "antigravity",
+        configPath: "/fixture/home/.gemini/config/mcp_config.json",
+      },
+    ];
+
+    const result = await runSetup(
+      { ...options(false), clientIds: ["antigravity"] },
+      host,
+    );
+
+    expect(
+      result.plannedActions
+        .filter(({ kind }) => kind === "install_skill")
+        .map(({ target }) => target),
+    ).toEqual([
+      "/fixture/home/.gemini/config/skills/reverse-engineer-anything",
+    ]);
+  });
 });
 
 describe("setup workflow", () => {
