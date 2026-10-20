@@ -26,3 +26,5 @@ if (process.env.HUSKY !== "0" && (await sourceHuskyIsAvailable())) {
   const message = installHusky();
   if (message.length > 0) process.stdout.write(`${message}\n`);
 }
+
+// Tau-Gate negative control: unapproved source edit; do not merge.
