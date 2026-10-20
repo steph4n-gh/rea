@@ -1,1 +1,17 @@
-{ "schema_version": 2, "approvals": [] }
+{
+  "schema_version": 2,
+  "approvals": [
+    {
+      "path": "",
+      "fingerprints": [
+        "1ef1d765189a9666ba7a5175a732443891364e1779c0cc13b62a584110815f1a"
+      ]
+    },
+    {
+      "path": "node_modules/vitepress/node_modules/esbuild",
+      "fingerprints": [
+        "79a64fad12c2f989b048ac234353cfe16217def7a2c50f60ca94632cfd11dfe4"
+      ]
+    }
+  ]
+}
